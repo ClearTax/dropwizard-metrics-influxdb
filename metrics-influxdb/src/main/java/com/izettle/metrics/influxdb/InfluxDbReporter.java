@@ -22,6 +22,8 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import com.izettle.metrics.influxdb.tags.NoopTransformer;
 import com.izettle.metrics.influxdb.tags.Transformer;
@@ -255,7 +257,11 @@ public final class InfluxDbReporter extends ScheduledReporter {
         } catch (ConnectException e) {
             LOGGER.warn("Unable to connect to InfluxDB. Discarding data.");
         } catch (Exception e) {
-            LOGGER.warn("Unable to report to InfluxDB with error '{}'. Discarding data.", e.getMessage());
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            e.printStackTrace(printWriter);
+
+            LOGGER.warn("Unable to report to InfluxDB with error '{}'. Discarding data.", stringWriter.toString());
         }
     }
 
